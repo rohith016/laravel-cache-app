@@ -26,17 +26,20 @@ class UserService{
      * @param [type] $id
      * @return void
      */
-    public function getAllUsers($ip): array
+    public function getAllUsers($ip) : mixed
     {
         try {
             $keyName = $ip . "-cached-users-lists";
-
+            // check the cache value exist or not
             $checkCache = $this->cacheFactory->exists($keyName);
+
             if($checkCache){
+                // if exist then get the data from cache
                 $userData = json_decode($this->cacheFactory->get($keyName), true);
             } else {
                 $userData = User::all();
                 if(count($userData) > 0){
+                    // if not exist create new entry and save the data
                     $this->cacheFactory->set($keyName, $userData);
                 }
             }
@@ -44,7 +47,7 @@ class UserService{
             return $userData;
         } catch (\Throwable $th) {
             // throw $th;
-            return [];
+            return null;
         }
         
     }
