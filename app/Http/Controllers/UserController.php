@@ -20,7 +20,19 @@ class UserController extends Controller
      */
     public function getUsers(Request $request): mixed
     {
-        $resultData = $this->service->getAllUsers($request -> ip ?? "127.0.0.1");
-        return response()->json($resultData, 200);
+        $response  = $this->service->getAllUsers($request -> ip ?? "127.0.0.1");
+        if ($response->success) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $response->data,
+                'message' => $response->message,
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => $response->message,
+                'data' => $response->data,
+            ], 400);
+        }
     }
 }

@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Cache\CacheFactory;
+use App\Services\ServiceResponse;
 
 class UserService{
     /**
@@ -23,10 +24,10 @@ class UserService{
     /**
      * getAllUsers function
      *
-     * @param [type] $id
-     * @return void
+     * @param [type] $ip
+     * @return ServiceResponse
      */
-    public function getAllUsers($ip) : mixed
+    public function getAllUsers($ip) : ServiceResponse
     {
         try {
             $keyName = $ip . "-cached-users-lists";
@@ -44,16 +45,11 @@ class UserService{
                 }
             }
 
-            return $userData;
+            return ServiceResponse::success($userData, 'Users retrived successfully');
         } catch (\Throwable $th) {
-            // throw $th;
-            return null;
+            return ServiceResponse::error('An error occurred: ' . $th->getMessage());
         }
         
     }
 
-
-    public static function test(){
-        return "service called";
-    }
 }
