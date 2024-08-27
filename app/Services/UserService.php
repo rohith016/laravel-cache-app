@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Dto\UserDto;
 use App\Models\User;
 use App\Cache\CacheFactory;
 use App\Services\ServiceResponse;
@@ -51,5 +52,41 @@ class UserService{
         }
         
     }
+    /**
+     * Summary of createUser
+     * @param \App\Dto\UserDto $userDto
+     * @return \App\Services\ServiceResponse
+     */
+    public function createUser(UserDto $userDto) : ServiceResponse
+    {
+        try {
 
+            $user = new User();
+            $user->name = $userDto->name;
+            $user->email = $userDto->email;
+            $user->password = $userDto->password;
+            $user->phoneNumber = $userDto->phoneNumber;
+            $user->save();
+
+            return ServiceResponse::success($user, 'Users created successfully');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return ServiceResponse::error('An error occurred: ' . $th->getMessage());
+
+        }
+    }
+
+    public function getUser($userId) : ServiceResponse
+    {
+        $user = User::find($userId);
+        if(!$user)
+            return ServiceResponse::error('Invalid User Request');
+
+        $userData = UserDto::toArray($user);
+
+        return ServiceResponse::success($userData, 'Users retrieved successfully');
+
+
+    }
 }

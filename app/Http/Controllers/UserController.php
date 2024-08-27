@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\UserDto;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 class UserController extends Controller
@@ -34,5 +35,28 @@ class UserController extends Controller
                 'data' => $response->data,
             ], 400);
         }
+    }
+
+    /**
+     * Summary of createUser
+     * @param \Illuminate\Http\Request $request
+     * @return void
+     */
+    public function createUser(Request $request){
+        $userDTO = new UserDto(
+            $request -> input('name'),
+            $request -> input('email'),
+            $request -> input('password'),
+            $request -> input('phoneNumber'),
+        );
+
+        // $userDto = UserDto::toObject($request -> all());
+
+
+        // dd($userDTO, $userDto);
+
+        $user = $this->service->createUser($userDTO);
+
+        return response()->json($user, 200);
     }
 }
